@@ -1,45 +1,67 @@
-**Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**
+### Prerequirements
+* docker (v19.03.13) [install](https://docs.docker.com/engine/install/)
+* enable kubernetes (v1.19.3) in docker preference
+* Test under macOS High Sierra 10.13.4, CPU: 2.5GHz Interl Core i7 / RAM: 16GB 2133MHz LPDDR3
 
-When you're done, you can delete the content in this README and update the file with details for others getting started with your repository.
+### pack spring boot & build image, then push image to docker hub  
+```
+$ cd springio-api
+$ mvn clean package -DskipTests=true
+$ docker build -t springio-api .
 
-*We recommend that you open this README in another tab as you perform the tasks below. You can [watch our video](https://youtu.be/0ocf7u76WSo) for a full demo of all the steps in this tutorial. Open the video in a new tab to avoid leaving Bitbucket.*
+# this image tag and "image" (in k8s-app/deployment.yaml) should be identical
+#
+$ docker login
+$ docker tag springio-api ${your_docker_hub}/springio-api:1.0.0
+$ docker push ${your_docker_hub}/springio-api:1.0.0
+```
 
----
+### check k8s cluster status  
+```
+$ kubectl cluster-info
+$ kubectl get nodes
+$ kubectl get services
+```
 
-## Edit a file
+### apply all service (app & mysql)  
+```
+$ kubectl apply -f base
+$ kubectl apply -f mysql
+$ kubectl apply -f springio-api/k8s-app
+```
 
-You’ll start by editing this README file to learn how to edit a file in Bitbucket.
+### check service,pod status  
+```
+$ kubectl get svc,pods -n springio
+```
 
-1. Click **Source** on the left side.
-2. Click the README.md link from the list of files.
-3. Click the **Edit** button.
-4. Delete the following text: *Delete this line to make a change to the README from Bitbucket.*
-5. After making your change, click **Commit** and then **Commit** again in the dialog. The commit page will open and you’ll see the change you just made.
-6. Go back to the **Source** page.
+### or using kubernetes proxy
+```
+# open browser: http://localhost:8080/swagger-ui.html
+#
+$ kubectl port-forward -n springio svc/springio-api 8080:8080
+```
 
----
+========================== reset ===============================
+### delete all in namespace "springio" & PV  
+```
+$ kubectl delete namespaces springio
+$ kubectl delete pv mysql-pv --grace-period=0 --force
+```
 
-## Create a file
+========================== debug ===============================
+### debug pod & check pod logs  
+```
+$ kubectl describe pods ${POD_NAME} -n springio 
+$ kubectl logs ${POD_NAME} -n springio   
+```
 
-Next, you’ll add a new file to this repository.
+### look inside mysql  
+```
+$ kubectl -n springio exec -it ${MYSQL_POD_NAME} -- mysql -u root -p
+```
 
-1. Click the **New file** button at the top of the **Source** page.
-2. Give the file a filename of **contributors.txt**.
-3. Enter your name in the empty file space.
-4. Click **Commit** and then **Commit** again in the dialog.
-5. Go back to the **Source** page.
-
-Before you move on, go ahead and explore the repository. You've already seen the **Source** page, but check out the **Commits**, **Branches**, and **Settings** pages.
-
----
-
-## Clone a repository
-
-Use these steps to clone from SourceTree, our client for using the repository command-line free. Cloning allows you to work on your files locally. If you don't yet have SourceTree, [download and install first](https://www.sourcetreeapp.com/). If you prefer to clone from the command line, see [Clone a repository](https://confluence.atlassian.com/x/4whODQ).
-
-1. You’ll see the clone button under the **Source** heading. Click that button.
-2. Now click **Check out in SourceTree**. You may need to create a SourceTree account or log in.
-3. When you see the **Clone New** dialog in SourceTree, update the destination path and name if you’d like to and then click **Clone**.
-4. Open the directory you just created to see your repository’s files.
-
-Now that you're more familiar with your Bitbucket repository, go ahead and add a new file locally. You can [push your change back to Bitbucket with SourceTree](https://confluence.atlassian.com/x/iqyBMg), or you can [add, commit,](https://confluence.atlassian.com/x/8QhODQ) and [push from the command line](https://confluence.atlassian.com/x/NQ0zDQ).
+### if pods stuck in terminating status  
+```
+$ kubectl delete pod <PODNAME> --grace-period=0 --force -n springio  
+```

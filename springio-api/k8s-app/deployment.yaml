@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: springio-api
+  name: springio-api
+  namespace: springio
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: springio-api
+  template:
+    metadata:
+      labels:
+        app: springio-api
+    spec:
+      containers:
+      - image: re102162189/springio-api:1.0.0
+        name: springio-api
+        ports:
+            - containerPort: 8080
+        imagePullPolicy: Always
