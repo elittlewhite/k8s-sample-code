@@ -10,4 +10,6 @@ kubectl create namespace springio
 kubectl apply -f base
 kubectl apply -f mysql  
 kubectl apply -f springio-api/k8s-app
-kubectl port-forward -n springio svc/springio-api 8080:8080
+
+#run this after service is ready
+#kubectl port-forward -n springio svc/springio-api 8080:8080
