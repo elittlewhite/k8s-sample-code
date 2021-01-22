@@ -11,4 +11,4 @@ kubectl apply -f mysql
 kubectl apply -f springio-api/k8s-app
 
 #run this after service is ready
-#kubectl port-forward -n springio svc/springio-api 8080:8080
+#kubectl port-forward -n springio svc/springio-demo 8080:8080

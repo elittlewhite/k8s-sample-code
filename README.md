@@ -7,13 +7,13 @@
 ```
 $ cd springio-api
 $ mvn clean package -DskipTests=true
-$ docker build -t springio-api .
+$ docker build -t springio-demo .
 
 # this image tag and "image" (in k8s-app/deployment.yaml) should be identical
 #
 $ docker login
-$ docker tag springio-api ${your_docker_hub}/springio-api:1.0.0
-$ docker push ${your_docker_hub}/springio-api:1.0.0
+$ docker tag springio-demo ${your_docker_hub}/springio-demo:1.0.0
+$ docker push ${your_docker_hub}/springio-demo:1.0.0
 ```
 
 ### check k8s cluster status  
@@ -39,7 +39,7 @@ $ kubectl get svc,pods -n springio
 ```
 # open browser: http://localhost:8080/swagger-ui.html
 #
-$ kubectl port-forward -n springio svc/springio-api 8080:8080
+$ kubectl port-forward -n springio svc/springio-demo 8080:8080
 ```
 
 ========================== reset ===============================
