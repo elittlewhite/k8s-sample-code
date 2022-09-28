@@ -1,12 +1,11 @@
 ### Prerequirements
-* docker (v19.03.13) [install](https://docs.docker.com/engine/install/)
-* enable kubernetes (v1.19.3) in docker preference
-* Test under macOS High Sierra 10.13.4, CPU: 2.5GHz Interl Core i7 / RAM: 16GB 2133MHz LPDDR3
+* docker (v20.10.17) [install](https://docs.docker.com/engine/install/)
+* enable kubernetes (v1.25.0) in docker preference
+* Test under macOS Monterey 12.6, CPU: 1.4GHz Interl Core i5 / RAM: 16GB 2133MHz LPDDR3
 
 ### pack spring boot & build image, then push image to docker hub  
 ```
 $ cd springio-api
-$ mvn clean package -DskipTests=true
 $ docker build -t springio-demo .
 
 # this image tag and "image" (in k8s-app/deployment.yaml) should be identical
@@ -25,6 +24,7 @@ $ kubectl get services
 
 ### apply all service (app & mysql)  
 ```
+$ cd ..
 $ kubectl apply -f base
 $ kubectl apply -f mysql
 $ kubectl apply -f springio-api/k8s-app
