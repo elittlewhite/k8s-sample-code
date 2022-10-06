@@ -46,6 +46,7 @@ $ kubectl port-forward -n springio svc/springio-demo 8080:8080
 ========================== reset ===============================
 ### delete all in namespace "springio" & PV  
 ```
+# 所有跟springio namespaces相關的resource一起砍掉 (像GCP把整個PROJECT砍掉)
 $ kubectl delete namespaces springio
 $ kubectl delete pv mysql-pv --grace-period=0 --force
 ```
@@ -56,7 +57,7 @@ $ kubectl delete pv mysql-pv --grace-period=0 --force
 $ kubectl describe pods ${POD_NAME} -n springio 
 $ kubectl logs ${POD_NAME} -n springio   
 ```
-# 這個執行有問題
+
 
 ### look inside mysql  
 ```
