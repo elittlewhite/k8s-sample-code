@@ -38,9 +38,10 @@ $ kubectl get svc,pods -n springio
 ### or using kubernetes proxy
 ```
 # open browser: http://localhost:8080/swagger-ui.html
-#
+# Forward one or more local ports to a pod.
 $ kubectl port-forward -n springio svc/springio-demo 8080:8080
 ```
+
 
 ========================== reset ===============================
 ### delete all in namespace "springio" & PV  
@@ -55,6 +56,7 @@ $ kubectl delete pv mysql-pv --grace-period=0 --force
 $ kubectl describe pods ${POD_NAME} -n springio 
 $ kubectl logs ${POD_NAME} -n springio   
 ```
+# 這個執行有問題
 
 ### look inside mysql  
 ```
